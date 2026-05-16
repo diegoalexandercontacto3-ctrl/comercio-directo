@@ -48,20 +48,12 @@ body { font-family: Segoe UI, sans-serif; background: #0f1117; color: #e0e0e0; h
 <body>
 <div class="container">
 
-<div class="setup-screen" id="setupScreen">
-<img src="/static/dal_logo.jpg" alt="DAL">
-<h2>ComercioDirectoARG</h2>
-<p>Ingresa el nombre de tu negocio para personalizar el asistente</p>
-<input class="setup-input" id="negocioInput" type="text" placeholder="Ej: Ferreteria El Tornillo">
-<button class="btn-confirmar" onclick="configurar()">Confirmar</button>
-</div>
-
-<div id="chatScreen" style="display:none; flex-direction:column; height:100vh;">
+<div id="chatScreen" style="display:flex; flex-direction:column; height:100vh;">
 <div class="header">
 <img src="/static/dal_logo.jpg" alt="DAL">
 <div>
 <h1>ComercioDirectoARG - Tech y Hogar</h1>
-<span id="negocioLabel">Configurado para: </span>
+<span>ComercioDirectoARG</span>
 </div>
 </div>
 <div class="badge" id="badge"></div>
@@ -77,6 +69,15 @@ body { font-family: Segoe UI, sans-serif; background: #0f1117; color: #e0e0e0; h
 </div>
 <script>
 var capturando = null;
+window.onload = function() {
+  fetch('/api/config', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({negocio: 'ComercioDirectoARG'})
+  }).then(function() {
+    agregarMsg('Hola! Soy el asistente virtual de ComercioDirectoARG. En que te puedo ayudar?', 'bot');
+  });
+};
 
 function hora() {
   var now = new Date();

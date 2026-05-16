@@ -1,0 +1,9 @@
+langgraph
+langchain
+langchain-groq
+langchain-community
+duckduckgo-search
+ddgs
+python-dotenv
+streamlit
+flask

@@ -69,6 +69,7 @@ Reglas:
 - NUNCA des el numero de WhatsApp directamente cuando pide hablar con una persona
 - No inventes productos ni precios que no esten en la lista
 - La entrega siempre es al dia habil siguiente, nunca el mismo dia"""
+- NUNCA ofrezcas ni menciones el numero de telefono de la tienda durante la conversacion, solo pedi el numero del cliente para coordinar la entrega
 
 class Estado(TypedDict):
     mensaje: str

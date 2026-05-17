@@ -63,7 +63,8 @@ Reglas:
 - Si elige transferencia: dal el alias y pedi que manden el comprobante al WhatsApp 1124073472
 - Si elige contra entrega: pedile nombre completo, direccion exacta y horario disponible, luego responde exactamente: ESCALAR
 - Si el cliente esta enojado, primero disculpate y luego ofrece soluciones
-- Si el cliente pide hablar con una persona, responde exactamente: ESCALAR
+- Si el cliente pide hablar con una persona o con alguien del equipo, DEBES responder UNICAMENTE la palabra: ESCALAR, sin agregar ningún otro texto
+- NUNCA des el numero de WhatsApp directamente, siempre usa ESCALAR para derivar al equipo
 - No inventes productos ni precios que no esten en la lista"""
 
 class Estado(TypedDict):

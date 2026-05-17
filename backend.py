@@ -6,6 +6,7 @@ from langchain_groq import ChatGroq
 from langchain_core.messages import HumanMessage, SystemMessage, AIMessage
 from langchain_community.tools import DuckDuckGoSearchRun
 from flask import Flask, request, jsonify, render_template, session
+import requests
 import secrets
 
 load_dotenv()
@@ -171,6 +172,11 @@ def chat():
             {'role': 'user', 'content': mensaje},
             {'role': 'assistant', 'content': f"Gracias {lead.get('nombre', '')}. Un responsable te va a contactar a la brevedad al {mensaje}."}
         ]
+        notificar_telegram(
+            'NUEVA CONSULTA - ComercioDirectoARG\n'
+            'Nombre: ' + lead.get('nombre', '') + '\n'
+            'Telefono: ' + mensaje
+        )
         return jsonify({'respuesta': f"Gracias {lead.get('nombre', '')}. Un responsable te va a contactar a la brevedad al {mensaje}.", 'tipo': 'escalado_completo', 'capturando': None})
 
     sistema = get_sistema_base(negocio)
@@ -195,6 +201,13 @@ def chat():
     return jsonify({'respuesta': respuesta, 'tipo': tipo, 'capturando': session.get('capturando')})
 
 @app.route('/api/reset', methods=['POST'])
+
+def notificar_telegram(mensaje):
+    token = os.getenv('TELEGRAM_TOKEN')
+    chat_id = os.getenv('TELEGRAM_CHAT_ID')
+    url = f'https://api.telegram.org/bot{token}/sendMessage'
+    requests.post(url, data={'chat_id': chat_id, 'text': mensaje})
+
 def reset():
     session.clear()
     return jsonify({'ok': True})

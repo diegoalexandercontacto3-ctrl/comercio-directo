@@ -198,9 +198,15 @@ def chat():
     tipo = resultado['tipo']
 
     if 'ESCALAR' in respuesta:
-        session['capturando'] = 'nombre'
-        respuesta = '¿Me podés decir tu nombre para avisarle a un responsable?'
-        tipo = 'escalado'
+    historial_raw = session.get('historial', [])
+    resumen = 'NUEVA VENTA - ComercioDirectoARG\n\nConversacion:\n'
+    for m in historial_raw[-20:]:
+        rol = 'Cliente' if m['role'] == 'user' else 'Agente'
+        resumen += rol + ': ' + m['content'] + '\n'
+    resumen += 'Cliente: ' + mensaje + '\n'
+    notificar_telegram(resumen)
+    respuesta = 'Perfecto! Ya le avisamos a un responsable de ComercioDirectoARG. Te van a contactar a la brevedad para confirmar tu pedido.'
+    tipo = 'escalado_completo'
 
     session['historial'] = historial_raw + [
         {'role': 'user', 'content': mensaje},

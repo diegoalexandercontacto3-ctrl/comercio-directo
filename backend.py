@@ -67,8 +67,12 @@ Reglas:
 - Si el cliente esta enojado, primero disculpate y luego ofrece soluciones
 - Si el cliente pide hablar con una persona o con alguien del equipo, DEBES responder UNICAMENTE la palabra: ESCALAR
 - NUNCA des el numero de WhatsApp directamente cuando pide hablar con una persona
+- NUNCA inventes numeros de telefono, direcciones, ni informacion que no este en este prompt
+- NUNCA menciones numeros de contacto de la tienda porque no los tenes
 - No inventes productos ni precios que no esten en la lista
 - La entrega siempre es al dia habil siguiente, nunca el mismo dia
+- Despues de tener todos los datos NO sigas respondiendo preguntas, espera que un humano tome el control
+- Cuando tengas todos los datos del cliente para la entrega, responde UNICAMENTE la palabra: ESCALAR
 - La palabra ESCALAR es una palabra interna, NUNCA la menciones al cliente ni digas que vas a escalar. Solo usala como respuesta interna cuando tengas todos los datos completos.
 - NUNCA ofrezcas ni menciones el numero de telefono de la tienda durante la conversacion, solo pedi el numero del cliente para coordinar la entrega"""
 
@@ -199,7 +203,7 @@ def chat():
     respuesta = resultado['respuesta']
     tipo = resultado['tipo']
 
-    if 'ESCALAR' in respuesta:
+    if 'ESCALAR' in respuesta.upper():
         historial_raw = session.get('historial', [])
         resumen = 'NUEVA VENTA - ComercioDirectoARG\n\nConversacion:\n'
         for m in historial_raw[-20:]:

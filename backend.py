@@ -8,6 +8,9 @@ from langchain_community.tools import DuckDuckGoSearchRun
 from flask import Flask, request, jsonify, render_template, session
 import requests
 import secrets
+import gspread
+from google.oauth2.service_account import Credentials
+from datetime import datetime
 
 load_dotenv()
 
@@ -29,6 +32,7 @@ Productos disponibles:
 - Cargador Rapido 4.2A Ditron (salida USB, ultra potente): $13.499
 
 Zonas de entrega y costos de envio (entrega al dia habil siguiente):
+IMPORTANTE sobre zonas: Los barrios de CABA (Palermo, Belgrano, Villa Crespo, Recoleta, Caballito, San Telmo, Almagro, Flores, Balvanera, Boedo, barracas, La Boca, Mataderos, Liniers, Devoto, Saavedra, Colegiales, Chacarita, Villa Urquiza, Paternal, Monte Castro, Versalles, Villa del Parque, Villa Santa Rita, Villa General Mitre, Villa Pueyrredon, Villa Ortuzar, Agronomia, Parque Avellaneda, Nueva Pompeya, Parque Patricios, San Cristobal, Montserrat, Puerto Madero, Retiro, Once, Barracas, Villa Lugano, Villa Soldati, Pompeya, Parque Chacabuco, Villa Riachuelo) son SIEMPRE zona CABA con costo $6.500. NUNCA los clasifiques como GBA.
 - CABA: $6.500
 - 1er cordon GBA (Avellaneda, Lanus, Lomas de Zamora, La Matanza Norte, Moron, Hurlingham, Ituzaingo, Tres de Febrero, San Martin, Vicente Lopez, San Isidro, San Fernando): $9.500
 - 2do cordon GBA (Quilmes, Almirante Brown, Esteban Echeverria, Ezeiza, Merlo, Moreno, Ituzaingo, Tigre, Malvinas Argentinas, Jose C Paz, San Miguel): $9.500
@@ -38,6 +42,8 @@ Zonas de entrega y costos de envio (entrega al dia habil siguiente):
 Metodos de pago:
 - Transferencia bancaria: Alias: comerciodirecto / Titular: Diego Alexander Lamberti
 - Pago contra entrega (disponible en todas las zonas listadas)
+
+REGLA CRITICA: En ambos procesos de venta, haz UNA SOLA PREGUNTA POR VEZ, en el orden exacto indicado. NO calcules ni informes datos hasta tener la respuesta del paso anterior. NO te saltes ningun paso.
 
 Proceso de venta contra entrega:
 Cuando el cliente quiere comprar y elige pagar contra entrega, DEBES seguir estos pasos en orden:
@@ -53,17 +59,20 @@ Cuando el cliente quiere comprar y elige pagar contra entrega, DEBES seguir esto
 
 Proceso de venta por transferencia:
 1. Preguntar el producto que quiere comprar
-2. Dar el alias: comerciodirecto / Titular: Diego Alexander Lamberti
-3. Informar que debe mandar el comprobante al WhatsApp: 1124073472
-4. Avisar que sin comprobante no se envia el producto
-5. Preguntar su nombre, direccion y localidad para coordinar la entrega
-6. Calcular el costo de envio segun la zona
-7. Confirmar el total: precio del producto + costo de envio
-8. Informar que la entrega es al dia habil siguiente
+2. Preguntar su nombre completo
+3. Preguntar su direccion exacta (calle, numero, piso/depto si tiene)
+4. Preguntar el partido o localidad
+5. Calcular el costo de envio segun la zona
+6. Confirmar el total: precio del producto + costo de envio
+7. Informar que la entrega es al dia habil siguiente
+8. Pedir numero de telefono de contacto
+9. Dar el alias: comerciodirecto / Titular: Diego Alexander Lamberti e informar que debe mandar el comprobante al WhatsApp: 1124073472
+10. Avisar que sin comprobante no se envia el producto
+11. Una vez que tenes todos los datos responde exactamente: ESCALAR
 
 Reglas:
 - Siempre responde en espanol, de forma amable y directa
-- Cuando un cliente quiere comprar, preguntale el metodo de pago primero
+- Cuando un cliente quiere comprar, primero confirma el producto que quiere comprar, luego pregunta el metodo de pago
 - Si el cliente esta enojado, primero disculpate y luego ofrece soluciones
 - Si el cliente pide hablar con una persona o con alguien del equipo, DEBES responder UNICAMENTE la palabra: ESCALAR
 - NUNCA des el numero de WhatsApp directamente cuando pide hablar con una persona
@@ -71,6 +80,8 @@ Reglas:
 - NUNCA menciones numeros de contacto de la tienda porque no los tenes
 - No inventes productos ni precios que no esten en la lista
 - La entrega siempre es al dia habil siguiente, nunca el mismo dia
+- Si el cliente eligio contra entrega, NUNCA menciones el alias ni la transferencia bancaria
+- Si el cliente eligio transferencia, NUNCA menciones el pago contra entrega
 - Despues de tener todos los datos NO sigas respondiendo preguntas, espera que un humano tome el control
 - Cuando tengas todos los datos del cliente para la entrega, responde UNICAMENTE la palabra: ESCALAR
 - La palabra ESCALAR es una palabra interna, NUNCA la menciones al cliente ni digas que vas a escalar. Solo usala como respuesta interna cuando tengas todos los datos completos.
@@ -192,6 +203,8 @@ def chat():
             rol = 'Cliente' if m['role'] == 'user' else 'Agente'
             resumen += rol + ': ' + m['content'] + '\n'
         notificar_telegram(resumen)
+        datos = extraer_datos_venta(historial_raw + [{'role': 'user', 'content': mensaje}])
+        guardar_en_sheets(datos['nombre'], datos['direccion'], datos['localidad'], datos['telefono'], datos['producto'], datos['total'], datos.get('metodo_pago', ''))
         return jsonify({'respuesta': f"Gracias {lead.get('nombre', '')}. Un responsable te va a contactar a la brevedad al {mensaje}.", 'tipo': 'escalado_completo', 'capturando': None})
 
     sistema = get_sistema_base(negocio)
@@ -203,7 +216,7 @@ def chat():
     respuesta = resultado['respuesta']
     tipo = resultado['tipo']
 
-    if 'ESCALAR' in respuesta.upper():
+    if 'ESCAL' in respuesta.upper() or 'ESCOA' in respuesta.upper():
         historial_raw = session.get('historial', [])
         resumen = 'NUEVA VENTA - ComercioDirectoARG\n\nConversacion:\n'
         for m in historial_raw[-20:]:
@@ -211,6 +224,9 @@ def chat():
             resumen += rol + ': ' + m['content'] + '\n'
         resumen += 'Cliente: ' + mensaje + '\n'
         notificar_telegram(resumen)
+        _lead = session.get('lead', {})
+        datos = extraer_datos_venta(historial_raw + [{'role': 'user', 'content': mensaje}])
+        guardar_en_sheets(datos['nombre'], datos['direccion'], datos['localidad'], datos['telefono'], datos['producto'], datos['total'], datos.get('metodo_pago', ''))
         respuesta = 'Perfecto! Ya le avisamos a un responsable de ComercioDirectoARG. Te van a contactar a la brevedad para confirmar tu pedido.'
         tipo = 'escalado_completo'
 
@@ -222,6 +238,34 @@ def chat():
     return jsonify({'respuesta': respuesta, 'tipo': tipo, 'capturando': session.get('capturando')})
 
 @app.route('/api/reset', methods=['POST'])
+
+def extraer_datos_venta(historial_raw):
+    try:
+        import json
+        texto = "\n".join([f"{'Cliente' if m['role']=='user' else 'Agente'}: {m['content']}" for m in historial_raw[-20:]])
+        prompt = [SystemMessage(content='Extrae datos del CLIENTE (no del vendedor Diego Alexander Lamberti ni de ComercioDirectoARG) de esta conversación de venta. Responde SOLO con JSON valido, sin texto extra: {"nombre":"","direccion":"","localidad":"","telefono":"","producto":"","total":"","metodo_pago":""}'),
+                  HumanMessage(content=texto)]
+        resultado = llm.invoke(prompt)
+        texto_respuesta = resultado.content.strip()
+        inicio = texto_respuesta.find('{')
+        fin = texto_respuesta.rfind('}') + 1
+        texto_respuesta = texto_respuesta[inicio:fin]
+        datos = json.loads(texto_respuesta)
+        return datos
+    except Exception as e:
+        print(f"Error extrayendo datos: {e}")
+        return {"nombre":"","direccion":"","localidad":"","telefono":"","producto":"","total":""}
+
+def guardar_en_sheets(nombre, direccion, localidad, telefono, producto, total, metodo_pago):
+    try:
+        scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
+        creds = Credentials.from_service_account_file('credenciales.json', scopes=scope)
+        client = gspread.authorize(creds)
+        sheet = client.open("Ventas comercio directo").sheet1
+        fecha = datetime.now().strftime("%d/%m/%Y %H:%M")
+        sheet.append_row([fecha, nombre, direccion, localidad, telefono, producto, total, metodo_pago])
+    except Exception as e:
+        print(f"Error guardando en Sheets: {e}")
 
 def notificar_telegram(mensaje):
     token = os.getenv('TELEGRAM_TOKEN')

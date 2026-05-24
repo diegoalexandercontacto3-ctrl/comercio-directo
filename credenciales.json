@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "comercio-directo-496907",
+  "private_key_id": "4155a32f71f5aad76b96a7595ea5108798fe3a41",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQC6JS46OPsONxm2\nBCh+62Ax3ztPCNoLCZFLuTBSxCv0b0xkfep4KEz7XA8jvSZWvfWNbcmdg6zHVcaL\nDr5izJIEYSLOjuAZe2rkmCpO082MekeaqXlrO73EYxBbOPujBi/QgGLvzbzRbMr0\nFqcPfPuG6/+d7NN1+YDoBtPgIWpAZM3ktai+Z0lUTKougTuO9yjiuy+QjrTCDswr\nRCGNku45bCcc6CXJoCc4Zl+rXftzvhWb2zP6J7oJDDEwxMbWeqSx+cTbK4Wdw5bU\nmR40bhV9fK5qUlwkCJFllTZOaAZ13cUhmkh2uqfMhW0pAOv26j2hGujRdNPkzH1L\nQd2xIKmjAgMBAAECggEAWulAwAfHOYSYpog2XPJI62KKnUmF8EEOeKyr2KhdjUZ0\nSVoj0uZf3p1x+XLuUAv7asTVZHwEPOB8FLsxKaCeqcvlC3vFIDziEl3sv836xCKO\naQ9fMQue3VTCjsLwRwkE/jBN4a+aCbA4GOkdU1enopgNIgyhpCsklW2MOhknwuWC\nGAaCxld5FtzcJibKME71E/twh8ZBhIghqO2YByMPsb5ClXGtomiDzSlMAyQzv3zG\nnygym+FDkKKPYY5EXF6EOKunV1H8Gz4UV93OorOBZO+da7f5YIUOf3s4AooovFzS\nyKzF+AL5RypY9pCugM+RKvRSSQEl3AS4JMFc+CXNrQKBgQDzbRIQivbbIz57+LyY\nSmhGYgLRDBsKj/TpYgJ/viFQFDUb11Cgc8Wcj9/SmwPI1ggcIt/DUGJr3RDNAUqV\n2NxBSurTCTacU0dxJegiehzd+qyVFOvcyvt2YAmHt22bJ5wNmm2zto7JKpM+QYsN\nweUJEIFPw5bMjn6znCdFRmP1DQKBgQDDwqkebDMsYFlFVBn7qIaKJeOrw/yUEhJJ\nP+oe9YrMFYwLpWhGeTE0IhehsxSaWKKEqBCJegr9TbaNJZ1LujMRl52x73FzYHRN\n6dQKAR+fqsNxbSCuWVDPPj0VoKaMchyg4JnJS8uLwUH3rYNJzlLnPifIWjvjQ6XJ\nMTu720bNbwKBgQCBwLCxWrFMi5PB1wsIDhlY8uNXdKFxVtyQDisQ1lLBcZQBfBrA\n/BToaBRBGVnCErwN61TkshNUNWjALaEJEKgOsZVL2gxe9VEOccsznW2HsReO+7Dh\nZtz08yoBSnfFDS70XU1+Tp/7gJMtyxgIxEKGO2MCFlpqPMYyjNit52BefQKBgAJ8\n+etSEsBwpRHVhNMHDFa7Lo6jWhWDuUnHDzG/izkW2QXY319t8Ospt8UtYoinscEf\n5b3pmDQqBbT7kmlA/58snyuA0J9XzYKkAzbxVraP1BYf/fdZWUaZEuuwdA168dQ1\npp7BYN/w3+bHBNEuVy1rQ9QvGW3FEVliT9EOc3LvAoGANb/SxLgF1/2AiIizFayv\n3Af2RxiOWn0e1EOp6sKPJ/ytuP98Sn+TsgawX20tlO0joQ8UtDk7FaORchPCmrwV\nL2pOV7eVmR9izActXz5ju0/4VT46V7AtEAgMVs9F1S9sNEWvYq7fyDmqVuDr7iJ8\ny02uEwwJmHN26P+kSffZRLA=\n-----END PRIVATE KEY-----\n",
+  "client_email": "comercio-directo@comercio-directo-496907.iam.gserviceaccount.com",
+  "client_id": "108928996104635306238",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/comercio-directo%40comercio-directo-496907.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}

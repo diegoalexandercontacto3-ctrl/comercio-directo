@@ -261,6 +261,7 @@ def guardar_en_sheets(nombre, direccion, localidad, telefono, producto, total, m
         scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
         import json as json_module
         creds_info = json_module.loads(os.getenv('GOOGLE_CREDENTIALS'))
+        creds_info['private_key'] = creds_info['private_key'].replace('\\n', '\n')
         creds = Credentials.from_service_account_info(creds_info, scopes=scope)
         client = gspread.authorize(creds)
         sheet = client.open("Ventas comercio directo").sheet1

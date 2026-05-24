@@ -259,7 +259,9 @@ def extraer_datos_venta(historial_raw):
 def guardar_en_sheets(nombre, direccion, localidad, telefono, producto, total, metodo_pago):
     try:
         scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
-        creds = Credentials.from_service_account_file('credenciales.json', scopes=scope)
+        import json as json_module
+        creds_info = json_module.loads(os.getenv('GOOGLE_CREDENTIALS'))
+        creds = Credentials.from_service_account_info(creds_info, scopes=scope)
         client = gspread.authorize(creds)
         sheet = client.open("Ventas comercio directo").sheet1
         fecha = datetime.now().strftime("%d/%m/%Y %H:%M")

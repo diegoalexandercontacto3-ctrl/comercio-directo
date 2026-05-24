@@ -7,3 +7,5 @@ ddgs
 python-dotenv
 streamlit
 flask
+gspread
+google-auth

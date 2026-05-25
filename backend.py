@@ -217,7 +217,7 @@ def chat():
     respuesta = resultado['respuesta']
     tipo = resultado['tipo']
 
-    if 'ESCAL' in respuesta.upper() or 'ESCOA' in respuesta.upper():
+    if any(x in respuesta.upper() for x in ['ESCAL', 'ESCOA', 'ESCOL', 'ESCUL', 'ESCAR', 'ESCEL', 'ESCOl', 'ESCAA', 'ESCAR']):
         historial_raw = session.get('historial', [])
         resumen = 'NUEVA VENTA - ComercioDirectoARG\n\nConversacion:\n'
         for m in historial_raw[-20:]:

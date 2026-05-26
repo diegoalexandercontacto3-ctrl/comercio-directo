@@ -270,7 +270,9 @@ def guardar_en_sheets(nombre, direccion, localidad, telefono, producto, total, m
         fecha = datetime.now().strftime("%d/%m/%Y %H:%M")
         sheet.append_row([fecha, nombre, direccion, localidad, telefono, producto, total, metodo_pago])
     except Exception as e:
+        import traceback
         print(f"Error guardando en Sheets: {e}")
+        print(traceback.format_exc())
 
 def notificar_telegram(mensaje):
     token = os.getenv('TELEGRAM_TOKEN')

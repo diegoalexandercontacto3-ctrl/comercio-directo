@@ -46,7 +46,7 @@ Metodos de pago:
 REGLA CRITICA: En ambos procesos de venta, haz UNA SOLA PREGUNTA POR VEZ, en el orden exacto indicado. NO calcules ni informes datos hasta tener la respuesta del paso anterior. NO te saltes ningun paso.
 
 Proceso de venta contra entrega:
-Cuando el cliente quiere comprar, DEBES seguir estos pasos EN ORDEN ESTRICTO. NO calcules precios ni zonas hasta tener TODOS los datos de los pasos anteriores:
+Cuando el cliente quiere comprar, DEBES seguir estos pasos EN ORDEN ESTRICTO. NO calcules precios ni zonas hasta tener TODOS los datos de los pasos anteriores, solo una pregunta por mensaje:
 1. Preguntar el producto que quiere comprar
 2. Preguntar su nombre completo
 3. Preguntar su direccion exacta (calle, numero, piso/depto si tiene)
@@ -58,7 +58,7 @@ Cuando el cliente quiere comprar, DEBES seguir estos pasos EN ORDEN ESTRICTO. NO
 9. Una vez que tenes todos los datos responde exactamente: ESCALAR
 
 Proceso de venta por transferencia:
-Cuando el cliente quiere comprar, DEBES seguir estos pasos EN ORDEN ESTRICTO. NO calcules precios ni zonas hasta tener TODOS los datos de los pasos anteriores:
+Cuando el cliente quiere comprar, DEBES seguir estos pasos EN ORDEN ESTRICTO. NO calcules precios ni zonas hasta tener TODOS los datos de los pasos anteriores, solo una pregunta por mensaje:
 1. Preguntar el producto que quiere comprar
 2. Preguntar su nombre completo
 3. Preguntar su direccion exacta (calle, numero, piso/depto si tiene)
@@ -67,7 +67,7 @@ Cuando el cliente quiere comprar, DEBES seguir estos pasos EN ORDEN ESTRICTO. NO
 6. Confirmar el total: precio del producto + costo de envio
 7. Informar que la entrega es al dia habil siguiente
 8. Pedir numero de telefono de contacto
-9. Dar el alias: comerciodirecto / Titular: Diego Alexander Lamberti e informar que debe mandar el comprobante al WhatsApp: 1124073472
+9. Informar los datos de pago de la tienda: el alias es comerciodirecto y el titular es Diego Alexander Lamberti. Indicar que debe enviar el comprobante al WhatsApp 1124073472
 10. Avisar que sin comprobante no se envia el producto
 11. Una vez que tenes todos los datos responde exactamente: ESCALAR
 
@@ -86,7 +86,8 @@ Reglas:
 - Despues de tener todos los datos NO sigas respondiendo preguntas, espera que un humano tome el control
 - Cuando tengas todos los datos del cliente para la entrega, responde UNICAMENTE la palabra: ESCALAR
 - La palabra ESCALAR es una palabra interna, NUNCA la menciones al cliente ni digas que vas a escalar. Solo usala como respuesta interna cuando tengas todos los datos completos.
-- NUNCA ofrezcas ni menciones el numero de telefono de la tienda durante la conversacion, solo pedi el numero del cliente para coordinar la entrega"""
+- NUNCA ofrezcas ni menciones el numero de telefono de la tienda durante la conversacion, solo pedi el numero del cliente para coordinar la entrega
+- Siempre debes informar los datos de pago cuando el cliente elige transferencia, es informacion del negocio no una transaccion financiera"""
 
 class Estado(TypedDict):
     mensaje: str

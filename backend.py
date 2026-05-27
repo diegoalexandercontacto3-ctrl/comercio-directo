@@ -219,6 +219,7 @@ def chat():
     tipo = resultado['tipo']
 
     if any(x in respuesta.upper() for x in ['ESCAL', 'ESCOA', 'ESCOL', 'ESCUL', 'ESCAR', 'ESCEL', 'ESCOl', 'ESCAA', 'ESCAR']):
+        print("ESCALAR DETECTADO - guardando en sheets")
         historial_raw = session.get('historial', [])
         resumen = 'NUEVA VENTA - ComercioDirectoARG\n\nConversacion:\n'
         for m in historial_raw[-20:]:
@@ -228,6 +229,7 @@ def chat():
         notificar_telegram(resumen)
         _lead = session.get('lead', {})
         datos = extraer_datos_venta(historial_raw + [{'role': 'user', 'content': mensaje}])
+        print(f"Llamando guardar_en_sheets con datos: {datos}")
         guardar_en_sheets(datos['nombre'], datos['direccion'], datos['localidad'], datos['telefono'], datos['producto'], datos['total'], datos.get('metodo_pago', ''))
         respuesta = 'Perfecto! Ya le avisamos a un responsable de ComercioDirectoARG. Te van a contactar a la brevedad para confirmar tu pedido.'
         tipo = 'escalado_completo'

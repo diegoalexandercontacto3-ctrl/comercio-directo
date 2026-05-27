@@ -18,7 +18,7 @@ app = Flask(__name__)
 app.secret_key = secrets.token_hex(16)
 
 buscador = DuckDuckGoSearchRun()
-llm = ChatGroq(model='llama-3.1-8b-instant', temperature=0.7)
+llm = ChatGroq(model='llama-3.3-70b-versatile', temperature=0.3)
 
 def get_sistema_base(negocio):
     return """Sos el asistente virtual de ComercioDirectoARG, una tienda de tecnologia y hogar con sede en La Tablada, Buenos Aires, Argentina.

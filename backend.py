@@ -15,6 +15,19 @@ from datetime import datetime
 load_dotenv()
 
 app = Flask(__name__)
+
+try:
+    import json as _json
+    from google.oauth2.service_account import Credentials as _Creds
+    _scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
+    _creds_raw = os.getenv('GOOGLE_CREDENTIALS', '')
+    _creds_info = _json.loads(_creds_raw)
+    _creds_info['private_key'] = _creds_info['private_key'].replace('\\n', '\n')
+    _creds = _Creds.from_service_account_info(_creds_info, scopes=_scope)
+    print("GOOGLE SHEETS: credenciales OK")
+except Exception as _e:
+    print(f"GOOGLE SHEETS ERROR AL INICIAR: {_e}")
+
 app.secret_key = secrets.token_hex(16)
 
 buscador = DuckDuckGoSearchRun()

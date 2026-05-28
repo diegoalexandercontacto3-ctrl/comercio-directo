@@ -232,21 +232,21 @@ def chat():
     tipo = resultado['tipo']
 
     if any(x in respuesta.upper() for x in ['ESCAL', 'ESCOA', 'ESCOL', 'ESCUL', 'ESCAR', 'ESCEL', 'ESCOl', 'ESCAA', 'ESCAR']):
-        print("ESCALAR DETECTADO - guardando en sheets")
-        historial_raw = session.get('historial', [])
-        resumen = 'NUEVA VENTA - ComercioDirectoARG\n\nConversacion:\n'
-        for m in historial_raw[-20:]:
-            rol = 'Cliente' if m['role'] == 'user' else 'Agente'
-            resumen += rol + ': ' + m['content'] + '\n'
-        resumen += 'Cliente: ' + mensaje + '\n'
-        notificar_telegram(resumen)
-        _lead = session.get('lead', {})
-        datos = extraer_datos_venta(historial_raw + [{'role': 'user', 'content': mensaje}])
-        print(f"Llamando guardar_en_sheets con datos: {datos}")
-        guardar_en_sheets(datos['nombre'], datos['direccion'], datos['localidad'], datos['telefono'], datos['producto'], datos['total'], datos.get('metodo_pago', ''))
-        respuesta = 'Perfecto! Ya le avisamos a un responsable de ComercioDirectoARG. Te van a contactar a la brevedad para confirmar tu pedido.'
-        tipo = 'escalado_completo'
-
+        print("DEBUG: ESCALAR detectado")
+        try:
+            notificar_telegram(historial_raw + [{'role': 'user', 'content': mensaje}])
+            print("DEBUG: Telegram enviado")
+        except Exception as e:
+            print(f"DEBUG: Error Telegram: {e}")
+        try:
+            datos = extraer_datos_venta(historial_raw + [{'role': 'user', 'content': mensaje}])
+            print(f"DEBUG: datos extraidos: {datos}")
+            guardar_en_sheets(datos['nombre'], datos['direccion'], datos['localidad'], datos['telefono'], datos['producto'], datos['total'], datos.get('metodo_pago', ''))
+        except Exception as e:
+            import traceback
+            print(f"DEBUG: Error antes de sheets: {e}")
+            print(traceback.format_exc())
+            
     session['historial'] = historial_raw + [
         {'role': 'user', 'content': mensaje},
         {'role': 'assistant', 'content': respuesta}

@@ -231,21 +231,21 @@ def chat():
     respuesta = resultado['respuesta']
     tipo = resultado['tipo']
 
-    if any(x in respuesta.upper() for x in ['ESCAL', 'ESCOA', 'ESCOL', 'ESCUL', 'ESCAR', 'ESCEL', 'ESCOl', 'ESCAA', 'ESCAR']) or tipo == 'escalado':
-        print("DEBUG: ESCALAR detectado")
-        try:
-            notificar_telegram(historial_raw + [{'role': 'user', 'content': mensaje}])
-            print("DEBUG: Telegram enviado")
-        except Exception as e:
-            print(f"DEBUG: Error Telegram: {e}")
-        try:
-            datos = extraer_datos_venta(historial_raw + [{'role': 'user', 'content': mensaje}])
-            print(f"DEBUG: datos extraidos: {datos}")
-            guardar_en_sheets(datos['nombre'], datos['direccion'], datos['localidad'], datos['telefono'], datos['producto'], datos['total'], datos.get('metodo_pago', ''))
-        except Exception as e:
-            import traceback
-            print(f"DEBUG: Error antes de sheets: {e}")
-            print(traceback.format_exc())
+    # Ocultar ESCALAR al cliente
+if any(x in respuesta.upper() for x in ['ESCAL', 'ESCOA', 'ESCOL', 'ESCUL', 'ESCAR', 'ESCEL', 'ESCOl', 'ESCAA', 'ESCAR']):
+    respuesta = respuesta[:respuesta.upper().find('ESCAL')].strip()
+
+# Guardar en Sheets cuando el flujo termina
+if tipo == 'escalado':
+    try:
+        datos = extraer_datos_venta(historial_raw + [{'role': 'user', 'content': mensaje}])
+        print(f"DEBUG datos: {datos}")
+        guardar_en_sheets(datos['nombre'], datos['direccion'], datos['localidad'], datos['telefono'], datos['producto'], datos['total'], datos.get('metodo_pago', ''))
+        print("DEBUG: sheets OK")
+    except Exception as e:
+        import traceback
+        print(f"DEBUG sheets error: {e}")
+        print(traceback.format_exc())
             
     session['historial'] = historial_raw + [
         {'role': 'user', 'content': mensaje},

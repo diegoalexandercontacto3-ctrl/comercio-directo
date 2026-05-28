@@ -275,18 +275,25 @@ def extraer_datos_venta(historial_raw):
 
 def guardar_en_sheets(nombre, direccion, localidad, telefono, producto, total, metodo_pago):
     try:
+        print("SHEETS DEBUG 1: entrando a guardar_en_sheets")
+        import json as _json
         scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
-        import json as json_module
-        creds_info = json_module.loads(os.getenv('GOOGLE_CREDENTIALS'))
+        creds_raw = os.getenv('GOOGLE_CREDENTIALS')
+        creds_info = _json.loads(creds_raw)
         creds_info['private_key'] = creds_info['private_key'].replace('\\n', '\n')
         creds = Credentials.from_service_account_info(creds_info, scopes=scope)
-        client = gspread.authorize(creds)
-        sheet = client.open("Ventas comercio directo").sheet1
-        fecha = datetime.now().strftime("%d/%m/%Y %H:%M")
-        sheet.append_row([fecha, nombre, direccion, localidad, telefono, producto, total, metodo_pago])
+        print("SHEETS DEBUG 2: credenciales OK")
+        cliente = gspread.authorize(creds)
+        print("SHEETS DEBUG 3: gspread autorizado")
+        sheet = cliente.open_by_key('10NJleuQGDydiXWTLSfQAbgdEs9nTvQyY9FrfCh4bKqg')
+        print("SHEETS DEBUG 4: sheet abierto")
+        hoja = sheet.sheet1
+        fecha = datetime.now().strftime('%d/%m/%Y %H:%M')
+        hoja.append_row([fecha, nombre, direccion, localidad, telefono, producto, total, metodo_pago])
+        print("SHEETS DEBUG 5: fila guardada OK")
     except Exception as e:
         import traceback
-        print(f"Error guardando en Sheets: {e}")
+        print(f"SHEETS ERROR: {e}")
         print(traceback.format_exc())
 
 def notificar_telegram(mensaje):

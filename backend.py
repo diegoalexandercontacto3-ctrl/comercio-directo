@@ -306,6 +306,15 @@ def reset():
     session.clear()
     return jsonify({'ok': True})
 
+@app.route('/test-sheets')
+def test_sheets():
+    try:
+        guardar_en_sheets('Test Usuario', 'Calle Falsa 123', 'CABA', '1100000000', 'Cargador Test', '19999', 'transferencia')
+        return 'SHEETS OK - fila guardada correctamente'
+    except Exception as e:
+        import traceback
+        return f'SHEETS ERROR: {str(e)}<br><pre>{traceback.format_exc()}</pre>'
+
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
     app.run(host='0.0.0.0', port=port)

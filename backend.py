@@ -231,7 +231,7 @@ def chat():
     respuesta = resultado['respuesta']
     tipo = resultado['tipo']
 
-    if any(x in respuesta.upper() for x in ['ESCAL', 'ESCOA', 'ESCOL', 'ESCUL', 'ESCAR', 'ESCEL', 'ESCOl', 'ESCAA', 'ESCAR']):
+    if any(x in respuesta.upper() for x in ['ESCAL', 'ESCOA', 'ESCOL', 'ESCUL', 'ESCAR', 'ESCEL', 'ESCOl', 'ESCAA', 'ESCAR']) or tipo == 'escalado':
         print("DEBUG: ESCALAR detectado")
         try:
             notificar_telegram(historial_raw + [{'role': 'user', 'content': mensaje}])

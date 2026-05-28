@@ -232,8 +232,8 @@ def chat():
     tipo = resultado['tipo']
 
     # Ocultar ESCALAR al cliente
-if any(x in respuesta.upper() for x in ['ESCAL', 'ESCOA', 'ESCOL', 'ESCUL', 'ESCAR', 'ESCEL', 'ESCOl', 'ESCAA', 'ESCAR']):
-    respuesta = respuesta[:respuesta.upper().find('ESCAL')].strip()
+    if any(x in respuesta.upper() for x in ['ESCAL', 'ESCOA', 'ESCOL', 'ESCUL', 'ESCAR', 'ESCEL', 'ESCOl', 'ESCAA', 'ESCAR']):
+        respuesta = respuesta[:respuesta.upper().find('ESCAL')].strip()
 
 # Guardar en Sheets cuando el flujo termina
 if tipo == 'escalado':

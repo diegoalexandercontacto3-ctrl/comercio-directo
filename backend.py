@@ -247,8 +247,15 @@ def chat():
         resumen += 'Cliente: ' + mensaje + '\n'
         notificar_telegram(resumen)
         _lead = session.get('lead', {})
-        datos = extraer_datos_venta(historial_raw + [{'role': 'user', 'content': mensaje}])
-        print(f"Llamando guardar_en_sheets con datos: {datos}")
+        try:
+            datos = extraer_datos_venta(historial_raw + [{'role': 'user', 'content': mensaje}])
+            print(f"DATOS EXTRAIDOS: {datos}", flush=True)
+            print(f"Llamando guardar_en_sheets con datos: {datos}")
+            print("SHEETS OK", flush=True)
+        except Exception as e:
+            import traceback
+            print(f"SHEETS ERROR: {e}", flush=True)
+            print(traceback.format_exc(), flush=True)
         guardar_en_sheets(datos['nombre'], datos['direccion'], datos['localidad'], datos['telefono'], datos['producto'], datos['total'], datos.get('metodo_pago', ''))
         respuesta = 'Perfecto! Ya le avisamos a un responsable de ComercioDirectoARG. Te van a contactar a la brevedad para confirmar tu pedido.'
         tipo = 'escalado_completo'

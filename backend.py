@@ -302,7 +302,10 @@ def guardar_en_sheets(nombre, direccion, localidad, telefono, producto, total, m
         print("SHEETS DEBUG 4: sheet abierto")
         hoja = sheet.sheet1
         fecha = datetime.now().strftime('%d/%m/%Y %H:%M')
-        hoja.append_row([fecha, nombre, direccion, localidad, telefono, producto, total, metodo_pago])
+        todos_datos = hoja.get_all_values()
+        siguiente_fila = len(todos_datos) + 1
+        hoja.update(f"A{siguiente_fila}:H{siguiente_fila}", [[fecha, nombre, direccion, localidad, telefono, producto, total, metodo_pago]])
+        print(f"ESCRITO EN FILA {siguiente_fila}", flush=True)
         print("SHEETS DEBUG 5: fila guardada OK")
     except Exception as e:
         import traceback

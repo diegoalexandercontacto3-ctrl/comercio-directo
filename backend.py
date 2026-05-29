@@ -231,22 +231,32 @@ def chat():
     respuesta = resultado['respuesta']
     tipo = resultado['tipo']
 
-    # Ocultar ESCALAR al cliente
     if any(x in respuesta.upper() for x in ['ESCAL', 'ESCOA', 'ESCOL', 'ESCUL', 'ESCAR', 'ESCEL', 'ESCOl', 'ESCAA', 'ESCAR']):
-        respuesta = respuesta[:respuesta.upper().find('ESCAL')].strip()
-
-# Guardar en Sheets cuando el flujo termina
-if tipo == 'escalado':
-    try:
+        print("ESCALAR DETECTADO - guardando en sheets")
+        historial_raw = session.get('historial', [])
+        resumen = 'NUEVA VENTA - ComercioDirectoARG\n\nConversacion:\n'
+        for m in historial_raw[-20:]:
+            rol = 'Cliente' if m['role'] == 'user' else 'Agente'
+            resumen += rol + ': ' + m['content'] + '\n'
+        resumen += 'Cliente: ' + mensaje + '\n'
+        notificar_telegram(resumen)
+        _lead = session.get('lead', {})
         datos = extraer_datos_venta(historial_raw + [{'role': 'user', 'content': mensaje}])
-        print(f"DEBUG datos: {datos}")
+        print(f"Llamando guardar_en_sheets con datos: {datos}")
         guardar_en_sheets(datos['nombre'], datos['direccion'], datos['localidad'], datos['telefono'], datos['producto'], datos['total'], datos.get('metodo_pago', ''))
-        print("DEBUG: sheets OK")
-    except Exception as e:
-        import traceback
-        print(f"DEBUG sheets error: {e}")
-        print(traceback.format_exc())
-            
+        respuesta = 'Perfecto! Ya le avisamos a un responsable de ComercioDirectoARG. Te van a contactar a la brevedad para confirmar tu pedido.'
+        tipo = 'escalado_completo'
+
+
+    if tipo == 'escalado':
+        try:
+            datos = extraer_datos_venta(historial_raw + [{'role': 'user', 'content': mensaje}])
+            guardar_en_sheets(datos['nombre'], datos['direccion'], datos['localidad'], datos['telefono'], datos['producto'], datos['total'], datos.get('metodo_pago', ''))
+        except Exception as e:
+            import traceback
+            print(f'SHEETS ERROR: {e}')
+            print(traceback.format_exc())
+
     session['historial'] = historial_raw + [
         {'role': 'user', 'content': mensaje},
         {'role': 'assistant', 'content': respuesta}
@@ -305,15 +315,6 @@ def notificar_telegram(mensaje):
 def reset():
     session.clear()
     return jsonify({'ok': True})
-
-@app.route('/test-sheets')
-def test_sheets():
-    try:
-        guardar_en_sheets('Test Usuario', 'Calle Falsa 123', 'CABA', '1100000000', 'Cargador Test', '19999', 'transferencia')
-        return 'SHEETS OK - fila guardada correctamente'
-    except Exception as e:
-        import traceback
-        return f'SHEETS ERROR: {str(e)}<br><pre>{traceback.format_exc()}</pre>'
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))

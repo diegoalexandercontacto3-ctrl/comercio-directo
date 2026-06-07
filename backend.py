@@ -10,6 +10,7 @@ import requests
 import secrets
 import gspread
 from google.oauth2.service_account import Credentials
+from sheets_writer import guardar_en_sheets
 from datetime import datetime
 
 load_dotenv()
@@ -286,31 +287,6 @@ def extraer_datos_venta(historial_raw):
         print(f"Error extrayendo datos: {e}")
         return {"nombre":"","direccion":"","localidad":"","telefono":"","producto":"","total":""}
 
-def guardar_en_sheets(nombre, direccion, localidad, telefono, producto, total, metodo_pago):
-    try:
-        print("SHEETS DEBUG 1: entrando a guardar_en_sheets")
-        import json as _json
-        scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
-        creds_raw = os.getenv('GOOGLE_CREDENTIALS')
-        creds_info = _json.loads(creds_raw)
-        creds_info['private_key'] = creds_info['private_key'].replace('\\n', '\n')
-        creds = Credentials.from_service_account_info(creds_info, scopes=scope)
-        print("SHEETS DEBUG 2: credenciales OK")
-        cliente = gspread.authorize(creds)
-        print("SHEETS DEBUG 3: gspread autorizado")
-        sheet = cliente.open_by_key('10NJleuQGDydiXWTLSfQAbgdEs9nTvQyY9FrfCh4bKqg')
-        print("SHEETS DEBUG 4: sheet abierto")
-        hoja = sheet.sheet1
-        fecha = datetime.now().strftime('%d/%m/%Y %H:%M')
-        todos_datos = hoja.get_all_values()
-        siguiente_fila = len(todos_datos) + 1
-        hoja.update(f"A{siguiente_fila}:H{siguiente_fila}", [[fecha, nombre, direccion, localidad, telefono, producto, total, metodo_pago]])
-        print(f"ESCRITO EN FILA {siguiente_fila}", flush=True)
-        print("SHEETS DEBUG 5: fila guardada OK")
-    except Exception as e:
-        import traceback
-        print(f"SHEETS ERROR: {e}")
-        print(traceback.format_exc())
 
 def notificar_telegram(mensaje):
     token = os.getenv('TELEGRAM_TOKEN')

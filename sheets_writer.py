@@ -22,6 +22,7 @@ def guardar_en_sheets(nombre, direccion, localidad, telefono, producto, total, m
             scopes=['https://www.googleapis.com/auth/spreadsheets']
         )
         creds.refresh(google.auth.transport.requests.Request())
+        print(f"CLIENT EMAIL: {creds.service_account_email}", flush=True)
         
         fecha = datetime.now().strftime('%d/%m/%Y %H:%M')
         SHEET_ID = '10NJleuQGDydiXWTLSfQAbgdEs9nTvQyY9FrfCh4bKqg'

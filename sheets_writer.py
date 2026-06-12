@@ -25,7 +25,7 @@ def guardar_en_sheets(nombre, direccion, localidad, telefono, producto, total, m
         
         fecha = datetime.now().strftime('%d/%m/%Y %H:%M')
         SHEET_ID = '10NJleuQGDydiXWTLSfQAbgdEs9nTvQyY9FrfCh4bKqg'
-        url = f'https://sheets.googleapis.com/v4/spreadsheets/{SHEET_ID}/values/Sheet1!A1:append?valueInputOption=USER_ENTERED'
+        url = f'https://sheets.googleapis.com/v4/spreadsheets/{SHEET_ID}/values/A1:append?valueInputOption=USER_ENTERED&insertDataOption=INSERT_ROWS'
         headers = {
             'Authorization': f'Bearer {creds.token}',
             'Content-Type': 'application/json'
